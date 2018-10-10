@@ -247,6 +247,14 @@ public function getContext(http:FilterContext context) returns (string) {
 
 }
 
+public function getContextWithVersion(http:FilterContext context, string apiVersion) returns (string) {
+     string apiContext = getContext(context);
+     if (!apiContext.hasSuffix("/")){
+            apiContext += "/";
+     }
+     return apiContext + apiVersion;
+}
+
 public function getClientIp(http:Request request, http:Listener listener) returns (string) {
     string clientIp;
     if(request.hasHeader(X_FORWARD_FOR_HEADER)) {
@@ -286,8 +294,7 @@ public function getTenantDomain(http:FilterContext context) returns (string) {
     }
 }
 public function getApiName(http:FilterContext context) returns (string) {
-    string serviceName = context.serviceName;
-    return serviceName.split("_")[0];
+    return context.serviceName;
 }
 
 public function getConfigValue(string instanceId, string property, string defaultValue) returns string {

@@ -99,7 +99,7 @@ function generateRequestResponseExecutionDataEvent(http:Response response, http:
     requestResponseExecutionDTO.apiVersion = getAPIDetailsFromServiceAnnotation(reflect:getServiceAnnotations(context.
             serviceType)).
     apiVersion;
-    requestResponseExecutionDTO.apiContext = getContext(context);
+    requestResponseExecutionDTO.apiContext = getContextWithVersion(context, requestResponseExecutionDTO.apiVersion);
     requestResponseExecutionDTO.correlationId = <string>context.attributes[MESSAGE_ID];
 
     var res = response.cacheControl.noCache;
