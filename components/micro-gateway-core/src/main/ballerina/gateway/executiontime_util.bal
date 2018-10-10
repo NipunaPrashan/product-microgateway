@@ -31,10 +31,10 @@ function generateExecutionTimeEvent(http:FilterContext context) returns Executio
         executionTimeDTO.keyType = PRODUCTION_KEY_TYPE;
     }
     executionTimeDTO.apiName = getApiName(context);
-    executionTimeDTO.apiVersion = getAPIDetailsFromServiceAnnotation(reflect:getServiceAnnotations(context.serviceType))
-    .apiVersion;
+    string apiVer = getAPIDetailsFromServiceAnnotation(reflect:getServiceAnnotations(context.serviceType)).apiVersion;
+    executionTimeDTO.apiVersion = apiVer;
     executionTimeDTO.tenantDomain = getTenantDomain(context);
-    executionTimeDTO.context = getContext(context);
+    executionTimeDTO.context = getContextWithVersion(context, apiVer) ;
     executionTimeDTO.correleationID = <string>context.attributes[MESSAGE_ID];
 
     executionTimeDTO.securityLatency = getSecurityLatency(context);

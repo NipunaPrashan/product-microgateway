@@ -27,7 +27,6 @@ function populateThrottleAnalyticsDTO(http:FilterContext context) returns (Throt
     json metaInfo = {};
     eventDto.userTenantDomain = getTenantDomain(context);
     eventDto.apiName = getApiName(context);
-    eventDto.apiContext = getContext(context);
     eventDto.throttledTime = currentTimeMills;
     eventDto.throttledOutReason = <string>context.attributes[THROTTLE_OUT_REASON];
     eventDto.apiCreatorTenantDomain = getTenantDomain(context);
@@ -53,6 +52,7 @@ function populateThrottleAnalyticsDTO(http:FilterContext context) returns (Throt
         eventDto.subscriber = END_USER_ANONYMOUS;
     }
     eventDto.apiVersion =  apiVersion;
+    eventDto.apiContext = getContextWithVersion(context, apiVersion);
     metaInfo.correlationID = <string>context.attributes[MESSAGE_ID];
     eventDto.metaClientType = metaInfo.toString();
     return eventDto;
@@ -64,9 +64,9 @@ function populateFaultAnalyticsDTO(http:FilterContext context, error err) return
     time:Time time = time:currentTime();
     int currentTimeMills = time.time;
     json metaInfo = {};
-    eventDto.apiContext = getContext(context);
     eventDto.apiVersion = getAPIDetailsFromServiceAnnotation(reflect:getServiceAnnotations(context.serviceType)).
     apiVersion;
+    eventDto.apiContext = getContextWithVersion(context, eventDto.apiVersion);
     eventDto.apiName = getApiName(context);
     eventDto.resourcePath = getResourceConfigAnnotation(reflect:getResourceAnnotations(context.serviceType,
             context.resourceName)).path;
